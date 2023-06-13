@@ -7,7 +7,7 @@
 namespace esphome {
 namespace veml7700 {
 
-/** Enum listing all conversion/integration time settings for the TSL2561
+/** Enum listing all conversion/integration time settings for the VEML7700
  *
  * Higher values mean more accurate results, but will take more energy/more time.
  */
@@ -20,7 +20,7 @@ enum VEML7700IntegrationTime {
   VEML7700_INTEGRATION_800MS = 0xC0,
 };
 
-/** Enum listing all gain settings for the TSL2561.
+/** Enum listing all gain settings for the VEML7700.
  *
  * Higher values are better for low light situations, but can increase noise.
  */
@@ -31,7 +31,7 @@ enum VEML7700Gain {
   VEML7700_GAIN_1X = 0x0,
 };
 
-/// This class includes support for the TSL2561 i2c ambient light sensor.
+/// This class includes support for the VEML7700 i2c ambient light sensor.
 class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2c::I2CDevice {
  public:
   /** Set the time that sensor values should be accumulated for.
@@ -40,9 +40,12 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
    *
    * Possible values are:
    *
-   *  - `sensor::TSL2561_INTEGRATION_14MS`
-   *  - `sensor::TSL2561_INTEGRATION_101MS`
-   *  - `sensor::TSL2561_INTEGRATION_402MS` (default)
+   *  - `sensor::VEML7700_INTEGRATION_25MS`
+   *  - `sensor::VEML7700_INTEGRATION_50MS`
+   *  - `sensor::VEML7700_INTEGRATION_100MS` (default)
+   *  - `sensor::VEML7700_INTEGRATION_200MS`
+   *  - `sensor::VEML7700_INTEGRATION_400MS`  
+   *  - `sensor::VEML7700_INTEGRATION_800MS`
    *
    * @param integration_time The new integration time.
    */
@@ -52,19 +55,14 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
    *
    * Possible values are:
    *
-   *  - `sensor::TSL2561_GAIN_1X` (default)
-   *  - `sensor::TSL2561_GAIN_16X`
+   *  - `sensor::VEML7700_ALS_GAIN_2X` (default)
+   *  - `sensor::VEML7700_ALS_GAIN_1X`
+   *  - `sensor::VEML7700_ALS_GAIN_1P4X`
+   *  - `sensor::VEML7700_ALS_GAIN_1P8X`
    *
    * @param gain The new gain.
    */
   void set_gain(VEML7700Gain gain);
-
-  /** The "CS" package of this sensor has a slightly different formula for
-   * converting the raw values. Use this setting to indicate that this is a CS
-   * package. Defaults to false (not a CS package)
-   *
-   * @param package_cs Is this a CS package.
-   */
 
   // ========== INTERNAL METHODS ==========
   // (In most use cases you won't need these)
@@ -82,8 +80,8 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
   void read_data_();
   float calculate_lx_(uint16_t ch0, uint16_t ch1);
 
-  VEML7700IntegrationTime integration_time_{TSL2561_INTEGRATION_402MS};
-  VEML7700Gain gain_{TSL2561_GAIN_1X};
+  VEML7700IntegrationTime integration_time_{VEML7700_INTEGRATION_100MS};
+  VEML7700Gain gain_{VEML7700_ALS_GAIN_2X};
 };
 
 }  // namespace veml7700
