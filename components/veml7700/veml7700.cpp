@@ -1,21 +1,38 @@
-#include "tsl2561.h"
+#include "veml7700.h"
 #include "esphome/core/log.h"
 
 namespace esphome {
-namespace tsl2561 {
+namespace veml7700 {
 
-static const char *const TAG = "tsl2561";
+static const char *const TAG = "VEML7700";
 
 static const uint8_t TSL2561_COMMAND_BIT = 0x80;
-static const uint8_t TSL2561_WORD_BIT = 0x20;
-static const uint8_t TSL2561_REGISTER_CONTROL = 0x00;
-static const uint8_t TSL2561_REGISTER_TIMING = 0x01;
-static const uint8_t TSL2561_REGISTER_ID = 0x0A;
-static const uint8_t TSL2561_REGISTER_DATA_0 = 0x0C;
-static const uint8_t TSL2561_REGISTER_DATA_1 = 0x0E;
+// config
+static const uint8_t CONFIGURATION_REGISTER    = 0x00;
+static const uint16_t ALS_POWEROFF             = 0x1;
+static const uint16_t ALS_POWERON              = 0x0;
+static const uint16_t INTERRUPT_DISABLE        = 0x0;
+static const uint16_t ALS_PERS_1               = 0x0;
+static const uint16_t ALS_PERS_2               = 0x10;
+static const uint16_t ALS_PERS_4               = 0x20;
+static const uint16_t ALS_PERS_8               = 0x30;
 
-void TSL2561Sensor::setup() {
-  ESP_LOGCONFIG(TAG, "Setting up TSL2561...");
+//power save
+const uint8_t POWER_SAVING_REGISTER = 0x03;
+const uint8_t PSM_1                 = 0x0;
+const uint8_t PSM_2                 = 0x02;
+const uint8_t PSM_3                 = 0x04;
+const uint8_t PSM_4                 = 0x06;
+const uint8_t PSM_EN                = 0x01;
+const uint8_t PSM_DIS               = 0x0;
+
+// measurements
+const uint8_t ALS_REGISTER          = 0x04;
+const uint8_t WHITE_REGISTER        = 0x05;
+
+void VEML7700Sensor::setup() {
+  ESP_LOGCONFIG(TAG, "Setting up VEML7700...");
+  // ---------------       innen folytatni -----------------
   uint8_t id;
   if (!this->tsl2561_read_byte(TSL2561_REGISTER_ID, &id)) {
     this->mark_failed();
