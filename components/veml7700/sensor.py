@@ -4,13 +4,13 @@ from esphome.components import i2c, sensor
 from esphome.const import (
     CONF_GAIN,
     CONF_INTEGRATION_TIME,
-    CONF_PSM,
     DEVICE_CLASS_ILLUMINANCE,
     STATE_CLASS_MEASUREMENT,
     UNIT_LUX,
 )
 
 DEPENDENCIES = ["i2c"]
+CONF_PSM = "psm"
 
 veml7700_ns = cg.esphome_ns.namespace("veml7700")
 VEML7700IntegrationTime = veml7700_ns.enum("VEML7700IntegrationTime")
