@@ -171,7 +171,7 @@ bool VEML7700Sensor::veml7700_read_uint(uint8_t a_register, uint16_t *value) {
   return true;
 }
 
-bool VEML7700Sensor::veml7700_write_uint(uint8_t a_register, uint16_t *value) {
+bool VEML7700Sensor::veml7700_write_uint(uint8_t a_register, uint16_t value) {
   return this->write_byte_16(a_register, value);
 }
   
