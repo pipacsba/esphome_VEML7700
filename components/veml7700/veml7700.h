@@ -66,10 +66,10 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
    *
    * Possible values are:
    *
-   *  - `sensor::VEML7700_ALS_GAIN_2X` (default)
-   *  - `sensor::VEML7700_ALS_GAIN_1X`
-   *  - `sensor::VEML7700_ALS_GAIN_0p25X`
-   *  - `sensor::VEML7700_ALS_GAIN_0p125X`
+   *  - `sensor::VEML7700_GAIN_2X` (default)
+   *  - `sensor::VEML7700_GAIN_1X`
+   *  - `sensor::VEML7700_GAIN_0p25X`
+   *  - `sensor::VEML7700_GAIN_0p125X`
    *
    * @param gain The new gain.
    */
@@ -104,8 +104,8 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
   float calculate_lx_(uint16_t als);
 
   VEML7700IntegrationTime integration_time_{VEML7700_INTEGRATION_100MS};
-  VEML7700Gain gain_{VEML7700_ALS_GAIN_2X};
-  VEML7700PSM psm_{VEML7700_ALS_GAIN_2X};
+  VEML7700Gain gain_{VEML7700_GAIN_2X};
+  VEML7700PSM psm_{VEML7700_PSM_4};
 };
 
 }  // namespace veml7700
