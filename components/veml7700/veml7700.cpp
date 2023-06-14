@@ -159,17 +159,19 @@ void VEML7700Sensor::set_integration_time(VEML7700IntegrationTime integration_ti
 void VEML7700Sensor::set_gain(VEML7700Gain gain) { this->gain_ = gain; }
 void VEML7700Sensor::set_pms(VEML7700PMS pms) { this->pms_ = pms; }
   
-float TSL2561Sensor::get_setup_priority() const { return setup_priority::DATA; }
+float VEML7700Sensor::get_setup_priority() const { return setup_priority::DATA; }
 
-bool TSL2561Sensor::tsl2561_read_uint(uint8_t a_register, uint16_t *value) {
-  uint8_t data[2];
-  if (!this->read_bytes(a_register | TSL2561_COMMAND_BIT, data, 2))
+bool VEML7700Sensor::veml7700_read_uint(uint8_t a_register, uint16_t *value) {
+  uint16_t data;
+  if (!this->read_byte_16(a_register, data))
     return false;
-  const uint16_t hi = data[1];
-  const uint16_t lo = data[0];
-  *value = (hi << 8) | lo;
+  *value = data;
   return true;
 }
 
+bool VEML7700Sensor::veml7700_write_uint(uint8_t a_register, uint16_t *value) {
+  return this->write_byte_16(a_register, value);
+}
+  
 }  // namespace tsl2561
 }  // namespace esphome
