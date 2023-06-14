@@ -25,10 +25,21 @@ enum VEML7700IntegrationTime {
  * Higher values are better for low light situations, but can increase noise.
  */
 enum VEML7700Gain {
-  VEML7700_GAIN_1P4X = 0x1800,
-  VEML7700_GAIN_1P8X = 0x1000,
+  VEML7700_GAIN_0p25X = 0x1800,
+  VEML7700_GAIN_0p125X = 0x1000,
   VEML7700_GAIN_2X = 0x800,
   VEML7700_GAIN_1X = 0x0,
+};
+  
+/** Enum listing all PSM settings for the VEML7700.
+ *
+ * Higher values are increasing the measurement frequency, but increases current cunsumption.
+ */
+enum VEML7700PSM {
+  VEML7700_PSM_1 = 0x0,
+  VEML7700_PSM_2 = 0x10,
+  VEML7700_PSM_3 = 0x20,
+  VEML7700_PSM_4 = 0x30,
 };
 
 /// This class includes support for the VEML7700 i2c ambient light sensor.
@@ -57,12 +68,25 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
    *
    *  - `sensor::VEML7700_ALS_GAIN_2X` (default)
    *  - `sensor::VEML7700_ALS_GAIN_1X`
-   *  - `sensor::VEML7700_ALS_GAIN_1P4X`
-   *  - `sensor::VEML7700_ALS_GAIN_1P8X`
+   *  - `sensor::VEML7700_ALS_GAIN_0p25X`
+   *  - `sensor::VEML7700_ALS_GAIN_0p125X`
    *
    * @param gain The new gain.
    */
   void set_gain(VEML7700Gain gain);
+
+  /** Set the PowesSavingMode of the sensor. Sets the measurement period
+   *
+   * Possible values are:
+   *
+   *  - `sensor::VEML7700_PSM_1` (default)
+   *  - `sensor::VEML7700_PSM_2`
+   *  - `sensor::VEML7700_PSM_3`
+   *  - `sensor::VEML7700_PSM_4`
+   *
+   * @param psm The new PSM.
+   */
+  void set_gain(VEML7700PSM psm);  
 
   // ========== INTERNAL METHODS ==========
   // (In most use cases you won't need these)
@@ -82,6 +106,7 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
 
   VEML7700IntegrationTime integration_time_{VEML7700_INTEGRATION_100MS};
   VEML7700Gain gain_{VEML7700_ALS_GAIN_2X};
+  VEML7700PSM psm_{VEML7700_ALS_GAIN_2X};
 };
 
 }  // namespace veml7700
