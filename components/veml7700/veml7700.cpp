@@ -32,27 +32,18 @@ const uint8_t WHITE_REGISTER        = 0x05;
 
 void VEML7700Sensor::setup() {
   ESP_LOGCONFIG(TAG, "Setting up VEML7700...");
-  // ---------------       innen folytatni -----------------
-  uint8_t id;
-  if (!this->tsl2561_read_byte(TSL2561_REGISTER_ID, &id)) {
-    this->mark_failed();
-    return;
-  }
 
-  uint8_t timing;
-  if (!this->tsl2561_read_byte(TSL2561_REGISTER_TIMING, &timing)) {
-    this->mark_failed();
-    return;
-  }
-
-  timing &= ~0b00010000;
-  timing |= this->gain_ == TSL2561_GAIN_16X ? 0b00010000 : 0;
-
-  timing &= ~0b00000011;
-  timing |= this->integration_time_ & 0b11;
-
-  this->tsl2561_write_byte(TSL2561_REGISTER_TIMING, timing);
+  uint16_t integration_time = this->integration_time_;
+  uint16_t gain = this->gain_;
+  uint16_t psm = this->psm_
+    
+  this->veml7700_write_uint(CONFIGURATION_REGISTER, ALS_POWERON | integration_time | gain);
+  ESP_LOGCONFIG(TAG, "Power on, integration tiem, and gain are set");
+  
+  this->veml7700_write_uint(POWER_SAVING_REGISTER, PSM_EN | psm);
+  ESP_LOGCONFIG(TAG, "Power save registers are set");
 }
+  
 void TSL2561Sensor::dump_config() {
   LOG_SENSOR("", "TSL2561", this);
   LOG_I2C_DEVICE(this);
