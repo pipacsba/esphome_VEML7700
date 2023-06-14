@@ -4,6 +4,7 @@ from esphome.components import i2c, sensor
 from esphome.const import (
     CONF_GAIN,
     CONF_INTEGRATION_TIME,
+    CONF_PSM,
     DEVICE_CLASS_ILLUMINANCE,
     STATE_CLASS_MEASUREMENT,
     UNIT_LUX,
@@ -25,9 +26,17 @@ INTEGRATION_TIMES = {
 VEML7700Gain = veml7700_ns.enum("VEML7700Gain")
 GAINS = {
     "1X": VEML7700Gain.VEML7700_ALS_GAIN_1X,
-    "1.4X": VEML7700Gain.VEML7700_ALS_GAIN_1P4X,
-    "1.8X": VEML7700Gain.VEML7700_ALS_GAIN_1P8X,
+    "1/4X": VEML7700Gain.VEML7700_ALS_GAIN_0P25X,
+    "1/8X": VEML7700Gain.VEML7700_ALS_GAIN_0P125X,
     "2X": VEML7700Gain.VEML7700_ALS_GAIN_2X,
+}
+
+VEML7700PSM = veml7700_ns.enum("VEML7700PSM")
+PSMS = {
+    "1": VEML7700Gain.VEML7700_PSM_1,
+    "2": VEML7700Gain.VEML7700_PSM_2,
+    "3": VEML7700Gain.VEML7700_PSM_3,
+    "4": VEML7700Gain.VEML7700_PSM_4,
 }
 
 def validate_integration_time(value):
@@ -53,6 +62,7 @@ CONFIG_SCHEMA = (
                 CONF_INTEGRATION_TIME, default="100ms"
             ): validate_integration_time,
             cv.Optional(CONF_GAIN, default="2X"): cv.enum(GAINS, upper=True),
+            cv.Optional(CONF_PSM, default="1"): cv.enum(PSMS, upper=True),
         }
     )
     .extend(cv.polling_component_schema("60s"))
