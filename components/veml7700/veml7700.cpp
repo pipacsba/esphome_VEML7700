@@ -162,10 +162,12 @@ void VEML7700Sensor::set_psm(VEML7700PSM psm) { this->psm_ = psm; }
 float VEML7700Sensor::get_setup_priority() const { return setup_priority::DATA; }
 
 bool VEML7700Sensor::veml7700_read_uint(uint8_t a_register, uint16_t *value) {
-  uint16_t data;
-  if (!this->read_byte_16(a_register, data))
+  uint8_t data[2];
+  if (!this->read_bytes(a_register, data, 2))
     return false;
-  *value = data;
+  const uint16_t hi = data[1];
+  const uint16_t lo = data[0];
+  *value = (hi << 8) | lo;
   return true;
 }
 
