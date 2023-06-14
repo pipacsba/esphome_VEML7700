@@ -59,7 +59,7 @@ CONFIG_SCHEMA = (
     .extend(
         {
             cv.Optional(
-                CONF_INTEGRATION_TIME, default="100ms"
+                CONF_INTEGRATION_TIME, default="100"
             ): validate_integration_time,
             cv.Optional(CONF_GAIN, default="2X"): cv.enum(GAINS, upper=True),
             cv.Optional(CONF_PSM, default="1"): cv.enum(PSMS, upper=True),
@@ -77,4 +77,5 @@ async def to_code(config):
 
     cg.add(var.set_integration_time(config[CONF_INTEGRATION_TIME]))
     cg.add(var.set_gain(config[CONF_GAIN]))
+    cg.add(var.set_psm(config[CONF_PSM]))
     
