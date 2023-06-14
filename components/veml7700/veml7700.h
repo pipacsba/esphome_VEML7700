@@ -96,7 +96,7 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
   float get_setup_priority() const override;
 
   bool veml7700_read_uint(uint8_t a_register, uint16_t *value);
-  bool veml7700_write_uint(uint8_t a_register, uint8_t value);
+  bool veml7700_write_uint(uint8_t a_register, uint16_t value);
 
  protected:
   float get_integration_time_ms_();
