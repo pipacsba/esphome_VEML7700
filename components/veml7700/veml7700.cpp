@@ -35,7 +35,7 @@ void VEML7700Sensor::setup() {
 
   uint16_t integration_time = this->integration_time_;
   uint16_t gain = this->gain_;
-  uint16_t psm = this->psm_
+  uint16_t psm = this->psm_;
     
   if (!this->veml7700_write_uint(CONFIGURATION_REGISTER, ALS_POWERON | integration_time | gain)) 
   {
