@@ -100,6 +100,7 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
 
  protected:
   float get_integration_time_ms_();
+  float get_gain_();
   void read_data_();
   float calculate_lx_(uint16_t als);
 
