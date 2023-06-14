@@ -86,7 +86,7 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
    *
    * @param psm The new PSM.
    */
-  void set_gain(VEML7700PSM psm);  
+  void set_psm(VEML7700PSM psm);  
 
   // ========== INTERNAL METHODS ==========
   // (In most use cases you won't need these)
@@ -95,14 +95,13 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
   void update() override;
   float get_setup_priority() const override;
 
-  bool veml7700_read_byte(uint8_t a_register, uint8_t *value);
   bool veml7700_read_uint(uint8_t a_register, uint16_t *value);
-  bool veml7700_write_byte(uint8_t a_register, uint8_t value);
+  bool veml7700_write_uint(uint8_t a_register, uint8_t value);
 
  protected:
   float get_integration_time_ms_();
   void read_data_();
-  float calculate_lx_(uint16_t ch0, uint16_t ch1);
+  float calculate_lx_(uint16_t als);
 
   VEML7700IntegrationTime integration_time_{VEML7700_INTEGRATION_100MS};
   VEML7700Gain gain_{VEML7700_ALS_GAIN_2X};
