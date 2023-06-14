@@ -148,7 +148,7 @@ float VEML7700Sensor::get_gain_() {
     case VEML7700_GAIN_0p125X :
       return 0.125f;
     default:
-      return 2f;
+      return 2.0f;
   }
   return 0.0f;
 }
@@ -157,7 +157,7 @@ void VEML7700Sensor::set_integration_time(VEML7700IntegrationTime integration_ti
   this->integration_time_ = integration_time;
 }
 void VEML7700Sensor::set_gain(VEML7700Gain gain) { this->gain_ = gain; }
-void VEML7700Sensor::set_psm(VEML7700PMS psm) { this->psm_ = psm; }
+void VEML7700Sensor::set_psm(VEML7700PSM psm) { this->psm_ = psm; }
   
 float VEML7700Sensor::get_setup_priority() const { return setup_priority::DATA; }
 
