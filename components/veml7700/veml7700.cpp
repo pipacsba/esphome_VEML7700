@@ -128,12 +128,12 @@ float VEML7700Sensor::calculate_lx_(uint16_t als) {
 
 void VEML7700Sensor::read_data_() {
   uint16_t als;
-  if (!this->read_byte_16(ALS_REGISTER, &als)) {
+  if (!this->veml7700_read_uint(ALS_REGISTER, &als)) {
     this->status_set_warning();
     return;
   }
   uint16_t white;
-  if (!this->read_byte_16(WHITE_REGISTER, &white)) {
+  if (!this->veml7700_read_uint(WHITE_REGISTER, &white)) {
     this->status_set_warning();
     return;
   }
