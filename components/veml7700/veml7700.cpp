@@ -49,6 +49,8 @@ void VEML7700Sensor::setup() {
     ESP_LOGCONFIG(TAG, "Power on, integration time, and gain are set %u", ALS_POWERON | integration_time | gain);
   }
 
+  auto timeout = static_cast<uint32_t>(20);
+  
   uint16_t psm_en = PSM_EN;
   uint16_t setting_psm = psm_en | psm;
   
@@ -61,7 +63,7 @@ void VEML7700Sensor::setup() {
   {
     ESP_LOGCONFIG(TAG, "Power save registers are set %u", PSM_EN | psm);
   }
-  auto timeout = static_cast<uint32_t>(this->100 + 20);
+  auto timeout = static_cast<uint32_t>(20);
 }
   
 void VEML7700Sensor::dump_config() {
