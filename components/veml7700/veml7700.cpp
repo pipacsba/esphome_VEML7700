@@ -77,6 +77,7 @@ void VEML7700Sensor::update() {
 }
 
 float VEML7700Sensor::calculate_lx_(uint16_t als) {
+  float als_f = als;
   float magic_number = 0.0288;
   switch (this->integration_time_)
   {
@@ -105,7 +106,8 @@ float VEML7700Sensor::calculate_lx_(uint16_t als) {
     default:
       a_gain = 1;
   }
-  return als * magic_number * a_gain;
+  float lx = als_f * magic_number * a_gain;
+  return lx;
 }
   
   
