@@ -37,9 +37,9 @@ enum VEML7700Gain {
  */
 enum VEML7700PSM {
   VEML7700_PSM_1 = 0x0,
-  VEML7700_PSM_2 = 0x10,
-  VEML7700_PSM_3 = 0x20,
-  VEML7700_PSM_4 = 0x30,
+  VEML7700_PSM_2 = 0x02,
+  VEML7700_PSM_3 = 0x04,
+  VEML7700_PSM_4 = 0x06,
 };
 
 /// This class includes support for the VEML7700 i2c ambient light sensor.
