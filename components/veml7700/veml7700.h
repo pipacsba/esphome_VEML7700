@@ -97,7 +97,7 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
 
   bool veml7700_read_uint(uint8_t a_register, uint16_t *value);
   bool veml7700_write_uint(uint8_t a_register, uint16_t value);
-  bool veml7700_read_bytes_16(uint8_t a_register, uint16_t *value) 
+  bool veml7700_read_bytes_16(uint8_t a_register, uint16_t *value) ;
 
  protected:
   float get_integration_time_ms_();
