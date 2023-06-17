@@ -66,8 +66,19 @@ void VEML7700Sensor::dump_config() {
     ESP_LOGE(TAG, "Communication with VEML7700 failed!");
   }
 
-  int gain = this->gain_;
-  ESP_LOGCONFIG(TAG, "  Gain: %.3f x", this->get_gain_());
+  float a_gain = 0;
+  switch (this->gain_)
+  {
+    case VEML7700_GAIN_1X :
+      a_gain = 1;
+    case VEML7700_GAIN_0p25X :
+      a_gain = 0.25;
+    case VEML7700_GAIN_0p125X :
+      a_gain = 0.125;
+    default:
+      a_gain = 2;
+  }
+  ESP_LOGCONFIG(TAG, "  Gain: %.3f x", a_gain);
   ESP_LOGCONFIG(TAG, "  Integration Time: %.1f ms", this->get_integration_time_ms_());
 
   LOG_UPDATE_INTERVAL(this);
@@ -109,7 +120,6 @@ float VEML7700Sensor::calculate_lx_(uint16_t als) {
   float lx = als_f * magic_number * a_gain;
   return lx;
 }
-  
   
 void VEML7700Sensor::read_data_() {
   uint16_t als;
