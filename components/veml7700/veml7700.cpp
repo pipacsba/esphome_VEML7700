@@ -63,6 +63,7 @@ void VEML7700Sensor::setup() {
     ESP_LOGCONFIG(TAG, "Power save registers are set %u", PSM_EN | psm);
     ESP_LOGW(TAG, "Power save registers are set %u", PSM_EN | psm);
   }
+  auto timeout = static_cast<uint32_t>(this->get_integration_time_ms_() + 20);
 }
   
 void VEML7700Sensor::dump_config() {
