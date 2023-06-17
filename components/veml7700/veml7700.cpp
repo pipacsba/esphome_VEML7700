@@ -123,7 +123,7 @@ float VEML7700Sensor::calculate_lx_(uint16_t als) {
   
 void VEML7700Sensor::read_data_() {
   uint16_t als;
-  if (!this->veml7700_read_uint(ALS_REGISTER, &als)) {
+  if (!this->veml7700_read_bytes_16(ALS_REGISTER, &als)) {
     this->status_set_warning();
     return;
   }
@@ -183,6 +183,15 @@ bool VEML7700Sensor::veml7700_read_uint(uint8_t a_register, uint16_t *value) {
   *value = (hi << 8) | lo;
   return true;
 }
+
+bool VEML7700Sensor::veml7700_read_bytes_16(uint8_t a_register, uint16_t *value) {
+  uint16_t data;
+  if (!this->read_bytes_16(a_register, data, 1))
+    return false;
+  *value = data;
+  return true;
+}
+
 
 bool VEML7700Sensor::veml7700_write_uint(uint8_t a_register, uint16_t value) {
   return this->write_byte_16(a_register, value);
