@@ -91,21 +91,8 @@ void VEML7700Sensor::dump_config() {
 
   LOG_UPDATE_INTERVAL(this);
 }
-void VEML7700Sensor::update() {
 
-  uint16_t integration_time = this->integration_time_;
-  uint16_t gain = this->gain_;
-  uint16_t poweron = ALS_POWERON;
-  uint16_t setting = poweron | integration_time | gain;
-    
-  if (!this->veml7700_write_uint(CONFIGURATION_REGISTER, setting)) 
-  {
-     this->mark_failed();
-     return;   
-  }
-  
-  auto timeout = static_cast<uint32_t>(this->get_integration_time_ms_() + 20);
-  
+void VEML7700Sensor::update() {
   this->read_data_();
 }
 
