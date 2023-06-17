@@ -186,7 +186,7 @@ bool VEML7700Sensor::veml7700_read_uint(uint8_t a_register, uint16_t *value) {
 
 bool VEML7700Sensor::veml7700_read_bytes_16(uint8_t a_register, uint16_t *value) {
   uint16_t data;
-  if (!this->read_bytes_16(a_register, data, 1))
+  if (!this->read_bytes_16(a_register, *data, 1))
     return false;
   *value = data;
   return true;
