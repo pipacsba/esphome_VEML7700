@@ -127,7 +127,13 @@ void VEML7700Sensor::read_data_() {
     this->status_set_warning();
     return;
   }
+  uint16_t white;
+  if (!this->read_byte_16(WHITE_REGISTER, &white)) {
+    this->status_set_warning();
+    return;
+  }
   ESP_LOGD(TAG, "Got illuminance=%u ", als);
+  ESP_LOGD(TAG, "Got illuminance white =%u ", white);
   float lx = this->calculate_lx_(als);
   ESP_LOGD(TAG, "Got illuminance=%.1flx", lx);
   this->publish_state(lx);
