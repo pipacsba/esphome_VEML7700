@@ -47,6 +47,7 @@ void VEML7700Sensor::setup() {
   else
   {
     ESP_LOGCONFIG(TAG, "Power on, integration time, and gain are set %u", ALS_POWERON | integration_time | gain);
+    ESP_LOGW(TAG, "Power on, integration time, and gain are set %u", ALS_POWERON | integration_time | gain);
   }
 
   uint16_t psm_en = PSM_EN;
@@ -60,6 +61,7 @@ void VEML7700Sensor::setup() {
   else
   {
     ESP_LOGCONFIG(TAG, "Power save registers are set %u", PSM_EN | psm);
+    ESP_LOGW(TAG, "Power save registers are set %u", PSM_EN | psm);
   }
 }
   
