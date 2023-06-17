@@ -49,7 +49,8 @@ void VEML7700Sensor::setup() {
     ESP_LOGCONFIG(TAG, "Power on, integration time, and gain are set %u", ALS_POWERON | integration_time | gain);
   }
 
-  auto timeout = static_cast<uint32_t>(20);
+  auto timeout = static_cast<uint32_t>(this->get_integration_time_ms_() + 20);
+  this->set_timeout("illuminance", timeout, [this]() { this->read_data_(); });
   
   uint16_t psm_en = PSM_EN;
   uint16_t setting_psm = psm_en | psm;
