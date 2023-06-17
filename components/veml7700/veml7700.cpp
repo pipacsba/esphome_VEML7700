@@ -95,7 +95,6 @@ void VEML7700Sensor::update() {
 
   uint16_t integration_time = this->integration_time_;
   uint16_t gain = this->gain_;
-  uint16_t psm = this->psm_;
   uint16_t poweron = ALS_POWERON;
   uint16_t setting = poweron | integration_time | gain;
     
@@ -104,23 +103,8 @@ void VEML7700Sensor::update() {
      this->mark_failed();
      return;   
   }
-  else
-  {
-    ESP_LOGW(TAG, "Power on, integration time, and gain are set %u", ALS_POWERON | integration_time | gain);
-  }
-
-  uint16_t psm_en = PSM_EN;
-  uint16_t setting_psm = psm_en | psm;
   
-  if (!this->veml7700_write_uint(POWER_SAVING_REGISTER, setting_psm))
-  {
-     this->mark_failed();
-     return;   
-  }
-  else
-  {
-    ESP_LOGW(TAG, "Power save registers are set %u", PSM_EN | psm);
-  }
+  auto timeout = static_cast<uint32_t>(this->get_integration_time_ms_() + 20);
   
   this->read_data_();
 }
