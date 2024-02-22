@@ -131,9 +131,9 @@ void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
   }
 
   if (als_raw_value >= UINT16_MAX * 0.9) {  // over-saturated, reset all gains and start over
-    this->digital_gain_ = VEML7700_DIGITAL_GAIN_1X;
+    //this->digital_gain_ = VEML7700_DIGITAL_GAIN_1X;
     this->gain_ = VEML7700_GAIN_1X;
-    this->integration_time_ = VEML7700_INTEGRATION_TIME_50MS;
+    this->integration_time_ = VEML7700_INTEGRATION_25MS;
     this->refresh_config_reg();
     return;
   }
