@@ -53,7 +53,7 @@ VEML7700_PSMS = {
 
 def validate_integration_time(value):
     value = cv.positive_time_period_milliseconds(value).total_milliseconds
-    return cv.enum(INTEGRATION_TIMES, int=True)(value)
+    return cv.enum(VEML7700_INTEGRATION_TIMES, int=True)(value)
 
 
 
