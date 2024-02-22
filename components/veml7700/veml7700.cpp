@@ -206,7 +206,7 @@ void VEML7700Sensor::dump_config() {
       a_gain = 2;
   }
   ESP_LOGCONFIG(TAG, "  Gain: %.3f x", a_gain);
-  ESP_LOGCONFIG(TAG, "  Integration Time: %.1f ms", this->get_integration_time_ms_());
+  ESP_LOGCONFIG(TAG, "  Integration Time: %.1f ms", this->integration_time_);
 
   LOG_UPDATE_INTERVAL(this);
 }
