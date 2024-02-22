@@ -147,7 +147,7 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
    *
    * @param psm The new PSM.
    */
-  void set_psm(VEML7700PSM psm);  
+  void set_psm(VEML7700PSM psm) { this->psm_ = psm; };  
 
   // ========== INTERNAL METHODS ==========
   // (In most use cases you won't need these)
