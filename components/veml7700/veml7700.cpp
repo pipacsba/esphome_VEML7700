@@ -88,6 +88,9 @@ float VEML7700Sensor::read_lx_() {
             als_raw_value_multiplier);
   switch (this->integration_time_)
   {
+    case VEML7700_INTEGRATION_100MS:
+      als_raw_value_multiplier *= 0.125;
+      break;
     case VEML7700_INTEGRATION_200MS:
       als_raw_value_multiplier *= 0.25;
       break;
@@ -98,7 +101,7 @@ float VEML7700Sensor::read_lx_() {
       als_raw_value_multiplier *= 1;
       break;
     case VEML7700_INTEGRATION_50MS:
-      als_raw_value_multiplier *= 0.625;
+      als_raw_value_multiplier *= 0.0625;
       break;
     case VEML7700_INTEGRATION_25MS:
       als_raw_value_multiplier *= 0.03125;
