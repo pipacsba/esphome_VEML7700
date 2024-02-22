@@ -6,11 +6,46 @@
 
 namespace esphome {
 namespace veml7700 {
+//static const char *const TAG = "VEML7700";
 
-/** Enum listing all conversion/integration time settings for the VEML7700
- *
- * Higher values mean more accurate results, but will take more energy/more time.
- */
+static const uint8_t ID_REG = 0x07;
+
+// config
+static const uint8_t CONFIGURATION_REGISTER    = 0x00;
+static const uint16_t ALS_POWEROFF             = 0x1;
+static const uint16_t ALS_POWERON              = 0x0;
+static const uint16_t INTERRUPT_DISABLE        = 0x0;
+static const uint16_t ALS_PERS_1               = 0x0;
+static const uint16_t ALS_PERS_2               = 0x10;
+static const uint16_t ALS_PERS_4               = 0x20;
+static const uint16_t ALS_PERS_8               = 0x30;
+
+//power save
+const uint8_t POWER_SAVING_REGISTER = 0x03;
+const uint8_t PSM_1                 = 0x0;
+const uint8_t PSM_2                 = 0x02;
+const uint8_t PSM_3                 = 0x04;
+const uint8_t PSM_4                 = 0x06;
+const uint8_t PSM_EN                = 0x01;
+const uint8_t PSM_DIS               = 0x0;
+
+// measurements
+const uint8_t ALS_REGISTER          = 0x04;
+const uint8_t WHITE_REGISTER        = 0x05;
+
+// Other important constants
+//
+static const uint8_t DEVICE_ID = 0x81;
+
+// Base multiplier value for lux computation
+//
+static const float LUX_MULTIPLIER_BASE = 0.0042;
+
+// Enum for conversion/integration time settings for the VEML3235.
+//
+// Specific values of the enum constants are register values taken from the VEML3235 datasheet.
+// Longer times mean more accurate results, but will take more energy/more time.
+//
 enum VEML7700IntegrationTime {
   VEML7700_INTEGRATION_25MS  = 0x300,
   VEML7700_INTEGRATION_50MS  = 0x200,
@@ -20,10 +55,9 @@ enum VEML7700IntegrationTime {
   VEML7700_INTEGRATION_800MS = 0xC0,
 };
 
-/** Enum listing all gain settings for the VEML7700.
- *
- * Higher values are better for low light situations, but can increase noise.
- */
+// Enum for gain settings for the VEML3235.
+// Higher values are better for low light situations, but can increase noise.
+//
 enum VEML7700Gain {
   VEML7700_GAIN_0p25X = 0x1800,
   VEML7700_GAIN_0p125X = 0x1000,
@@ -45,6 +79,35 @@ enum VEML7700PSM {
 /// This class includes support for the VEML7700 i2c ambient light sensor.
 class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2c::I2CDevice {
  public:
+  void setup() override;
+  void dump_config() override;
+  void update() override { this->publish_state(this->read_lx_()); }
+  float get_setup_priority() const override { return setup_priority::DATA; }
+
+  // Used by ESPHome framework. Does NOT actually set the value on the device.
+  void set_auto_gain(bool auto_gain) { this->auto_gain_ = auto_gain; }
+  void set_auto_gain_threshold_high(float auto_gain_threshold_high) {
+    this->auto_gain_threshold_high_ = auto_gain_threshold_high;
+  }
+  void set_auto_gain_threshold_low(float auto_gain_threshold_low) {
+    this->auto_gain_threshold_low_ = auto_gain_threshold_low;
+  }
+
+  void set_power_on(bool power_on) { this->power_on_ = power_on; }
+
+  /** Set the internal gain of the sensor. Can be useful for low-light conditions
+   *
+   * Possible values are:
+   *
+   *  - `sensor::VEML7700_GAIN_2X` (default)
+   *  - `sensor::VEML7700_GAIN_1X`
+   *  - `sensor::VEML7700_GAIN_0p25X`
+   *  - `sensor::VEML7700_GAIN_0p125X`
+   *
+   * @param gain The new gain.
+   */
+  void set_gain(VEML7700ComponentGain gain) { this->gain_ = gain; }
+
   /** Set the time that sensor values should be accumulated for.
    *
    * Longer means more accurate, but also mean more power consumption.
@@ -60,20 +123,18 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
    *
    * @param integration_time The new integration time.
    */
-  void set_integration_time(VEML7700IntegrationTime integration_time);
+  void set_integration_time(VEML7700ComponentIntegrationTime integration_time) {
+    this->integration_time_ = integration_time;
+  }
 
-  /** Set the internal gain of the sensor. Can be useful for low-light conditions
-   *
-   * Possible values are:
-   *
-   *  - `sensor::VEML7700_GAIN_2X` (default)
-   *  - `sensor::VEML7700_GAIN_1X`
-   *  - `sensor::VEML7700_GAIN_0p25X`
-   *  - `sensor::VEML7700_GAIN_0p125X`
-   *
-   * @param gain The new gain.
-   */
-  void set_gain(VEML7700Gain gain);
+  bool auto_gain() { return this->auto_gain_; }
+  float auto_gain_threshold_high() { return this->auto_gain_threshold_high_; }
+  float auto_gain_threshold_low() { return this->auto_gain_threshold_low_; }
+  VEML7700ComponentGain gain() { return this->gain_; }
+  VEML7700ComponentIntegrationTime integration_time() { return this->integration_time_; }
+
+  // Updates the configuration register on the device
+  bool refresh_config_reg(bool force_on = false);
 
   /** Set the PowesSavingMode of the sensor. Sets the measurement period
    *
@@ -90,9 +151,7 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
 
   // ========== INTERNAL METHODS ==========
   // (In most use cases you won't need these)
-  void setup() override;
-  void dump_config() override;
-  void update() override;
+
   float get_setup_priority() const override;
 
   bool veml7700_read_uint(uint8_t a_register, uint16_t *value);
@@ -100,13 +159,16 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
   bool veml7700_read_bytes_16(uint8_t a_register, uint16_t *value) ;
 
  protected:
-  float get_integration_time_ms_();
-  float get_gain_();
-  void read_data_();
-  float calculate_lx_(uint16_t als);
+  float read_lx_();
+  void adjust_gain_(uint16_t als_raw_value);
 
-  VEML7700IntegrationTime integration_time_{VEML7700_INTEGRATION_100MS};
+  bool auto_gain_{true};
+  bool power_on_{true};
+  float auto_gain_threshold_high_{0.9};
+  float auto_gain_threshold_low_{0.2};
+
   VEML7700Gain gain_{VEML7700_GAIN_2X};
+  VEML7700IntegrationTime integration_time_{VEML7700_INTEGRATION_100MS};
   VEML7700PSM psm_{VEML7700_PSM_4};
 };
 
