@@ -36,9 +36,9 @@ bool VEML7700Sensor::refresh_config_reg(bool force_on) {
   ESP_LOGVV(TAG, "Writing 0x%.4x to register 0x%.2x", data, CONFIG_REG);
   bool a_return = this->write_byte_16(CONFIGURATION_REGISTER, data);
   
-  uint16_t data = PSM_EN;
+  data = PSM_EN;
   data |= (uint16_t(this->psm_));
-  uint16_t setting_psm = psm_en | psm;
+  //uint16_t setting_psm = psm_en | psm;
   ESP_LOGVV(TAG, "Writing 0x%.4x to register 0x%.2x", data, POWER_SAVING_REGISTER);
   bool b_return = this->write_byte_16(POWER_SAVING_REGISTER, data);
   
