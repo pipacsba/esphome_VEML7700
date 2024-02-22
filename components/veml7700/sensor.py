@@ -12,15 +12,25 @@ from esphome.const import (
 DEPENDENCIES = ["i2c"]
 CONF_PSM = "psm"
 
+
+CONF_AUTO_GAIN = "auto_gain"
+CONF_AUTO_GAIN_THRESHOLD_HIGH = "auto_gain_threshold_high"
+CONF_AUTO_GAIN_THRESHOLD_LOW = "auto_gain_threshold_low"
 veml7700_ns = cg.esphome_ns.namespace("veml7700")
+
+VEML7700Sensor = veml7700_ns.class_(
+    "VEML7700Sensor", sensor.Sensor, cg.PollingComponent, i2c.I2CDevice
+)
+
+
 VEML7700IntegrationTime = veml7700_ns.enum("VEML7700IntegrationTime")
-INTEGRATION_TIMES = {
-    25: VEML7700IntegrationTime.VEML7700_INTEGRATION_25MS,
-    50: VEML7700IntegrationTime.VEML7700_INTEGRATION_50MS,
-    100: VEML7700IntegrationTime.VEML7700_INTEGRATION_100MS,
-    200: VEML7700IntegrationTime.VEML7700_INTEGRATION_200MS,
-    400: VEML7700IntegrationTime.VEML7700_INTEGRATION_400MS,
-    800: VEML7700IntegrationTime.VEML7700_INTEGRATION_800MS,
+VEML7700_INTEGRATION_TIMES = {
+    "25ms": VEML7700IntegrationTime.VEML7700_INTEGRATION_25MS,
+    "50ms": VEML7700IntegrationTime.VEML7700_INTEGRATION_50MS,
+    "100ms": VEML7700IntegrationTime.VEML7700_INTEGRATION_100MS,
+    "200ms": VEML7700IntegrationTime.VEML7700_INTEGRATION_200MS,
+    "400ms": VEML7700IntegrationTime.VEML7700_INTEGRATION_400MS,
+    "800ms": VEML7700IntegrationTime.VEML7700_INTEGRATION_800MS,
 }
 
 VEML7700Gain = veml7700_ns.enum("VEML7700Gain")
@@ -29,10 +39,12 @@ GAINS = {
     "1/4X": VEML7700Gain.VEML7700_GAIN_0P25X,
     "1/8X": VEML7700Gain.VEML7700_GAIN_0P125X,
     "2X": VEML7700Gain.VEML7700_GAIN_2X,
+    "AUTO": VEML3235ComponentGain.VEML7700_GAIN_AUTO,
+
 }
 
 VEML7700PSM = veml7700_ns.enum("VEML7700PSM")
-PSMS = {
+VEML7700_PSMS = {
     "1": VEML7700PSM.VEML7700_PSM_1,
     "2": VEML7700PSM.VEML7700_PSM_2,
     "3": VEML7700PSM.VEML7700_PSM_3,
@@ -44,9 +56,7 @@ def validate_integration_time(value):
     return cv.enum(INTEGRATION_TIMES, int=True)(value)
 
 
-VEML7700Sensor = veml7700_ns.class_(
-    "VEML7700Sensor", sensor.Sensor, cg.PollingComponent, i2c.I2CDevice
-)
+
 
 CONFIG_SCHEMA = (
     sensor.sensor_schema(
@@ -58,11 +68,12 @@ CONFIG_SCHEMA = (
     )
     .extend(
         {
-            cv.Optional(
-                CONF_INTEGRATION_TIME, default="100"
-            ): validate_integration_time,
+            cv.Optional(CONF_AUTO_GAIN, default=True): cv.boolean,
+            cv.Optional(CONF_AUTO_GAIN_THRESHOLD_HIGH, default="90%"): cv.percentage,
+            cv.Optional(CONF_AUTO_GAIN_THRESHOLD_LOW, default="20%"): cv.percentage,
             cv.Optional(CONF_GAIN, default="2X"): cv.enum(GAINS, upper=True),
-            cv.Optional(CONF_PSM, default="1"): cv.enum(PSMS, upper=True),
+            cv.Optional(CONF_INTEGRATION_TIME, default="100ms"): validate_integration_time,
+            cv.Optional(CONF_PSM, default="1"): cv.enum(VEML7700_PSMS, upper=True),
         }
     )
     .extend(cv.polling_component_schema("60s"))
@@ -75,7 +86,9 @@ async def to_code(config):
     await cg.register_component(var, config)
     await i2c.register_i2c_device(var, config)
 
+    cg.add(var.set_auto_gain(config[CONF_AUTO_GAIN]))
+    cg.add(var.set_auto_gain_threshold_high(config[CONF_AUTO_GAIN_THRESHOLD_HIGH]))
+    cg.add(var.set_auto_gain_threshold_low(config[CONF_AUTO_GAIN_THRESHOLD_LOW]))
+    cg.add(var.set_gain(GAINS[config[CONF_GAIN]]))
     cg.add(var.set_integration_time(config[CONF_INTEGRATION_TIME]))
-    cg.add(var.set_gain(config[CONF_GAIN]))
     cg.add(var.set_psm(config[CONF_PSM]))
-    
