@@ -83,7 +83,8 @@ float VEML7700Sensor::read_lx_() {
     default:
       break;
   }
-  
+  ESP_LOGD(TAG, "'%s': ALS raw = %u, multiplier = %.5f", this->get_name().c_str(), als_raw_value,
+            als_raw_value_multiplier);
   switch (this->integration_time_)
   {
     case VEML7700_INTEGRATION_200MS:
