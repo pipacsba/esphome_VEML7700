@@ -76,7 +76,7 @@ CONFIG_SCHEMA = (
             cv.Optional(CONF_PSM, default="1"): cv.enum(VEML7700_PSMS, upper=True),
             cv.Optional(CONF_INTEGRATION_TIME, default="50ms"): cv.All(
                 cv.positive_time_period_milliseconds,
-                cv.enum(VEML3235_INTEGRATION_TIMES, lower=True),
+                cv.enum(VEML7700_INTEGRATION_TIMES, lower=True),
             ),
         }
     )
