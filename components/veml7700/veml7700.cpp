@@ -213,7 +213,7 @@ void VEML7700Sensor::dump_config() {
   switch (this->integration_time_)
   {
     case VEML7700_INTEGRATION_100MS:
-      als_raw_value_multiplier *= 100;
+      an_int_time *= 100;
       break;
     case VEML7700_INTEGRATION_200MS:
       an_int_time *= 200;
