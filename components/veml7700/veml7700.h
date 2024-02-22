@@ -106,7 +106,7 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
    *
    * @param gain The new gain.
    */
-  void set_gain(VEML7700ComponentGain gain) { this->gain_ = gain; }
+  void set_gain(VEML7700Gain gain) { this->gain_ = gain; }
 
   /** Set the time that sensor values should be accumulated for.
    *
@@ -123,7 +123,7 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
    *
    * @param integration_time The new integration time.
    */
-  void set_integration_time(VEML7700ComponentIntegrationTime integration_time) {
+  void set_integration_time(VEML7700IntegrationTime integration_time) {
     this->integration_time_ = integration_time;
   }
 
