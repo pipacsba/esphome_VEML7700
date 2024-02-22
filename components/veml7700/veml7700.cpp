@@ -206,8 +206,31 @@ void VEML7700Sensor::dump_config() {
     default:
       a_gain = 2;
   }
+
+  float: an_int_time = 0;
+  switch (this->integration_time_)
+  {
+    case VEML7700_INTEGRATION_200MS:
+      an_int_time *= 200;
+      break;
+    case VEML7700_INTEGRATION_400MS:
+      an_int_time *= 400;
+      break;
+    case VEML7700_INTEGRATION_800MS:
+      an_int_time *= 800;
+      break;
+    case VEML7700_INTEGRATION_50MS:
+      an_int_time *= 50;
+      break;
+    case VEML7700_INTEGRATION_25MS:
+      an_int_time *= 25;
+      break;
+    default:
+      break;
+
+  
   ESP_LOGCONFIG(TAG, "  Gain: %.3f x", a_gain);
-  ESP_LOGCONFIG(TAG, "  Integration Time: %.1f ms", this->integration_time_);
+  ESP_LOGCONFIG(TAG, "  Integration Time: %.1f ms", an_int_time);
 
   LOG_UPDATE_INTERVAL(this);
 }
