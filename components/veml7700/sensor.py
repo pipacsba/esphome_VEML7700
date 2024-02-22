@@ -72,8 +72,12 @@ CONFIG_SCHEMA = (
             cv.Optional(CONF_AUTO_GAIN_THRESHOLD_HIGH, default="90%"): cv.percentage,
             cv.Optional(CONF_AUTO_GAIN_THRESHOLD_LOW, default="20%"): cv.percentage,
             cv.Optional(CONF_GAIN, default="2X"): cv.enum(GAINS, upper=True),
-            cv.Optional(CONF_INTEGRATION_TIME, default="100ms"): validate_integration_time,
+            #cv.Optional(CONF_INTEGRATION_TIME, default="100ms"): validate_integration_time,
             cv.Optional(CONF_PSM, default="1"): cv.enum(VEML7700_PSMS, upper=True),
+            cv.Optional(CONF_INTEGRATION_TIME, default="50ms"): cv.All(
+                cv.positive_time_period_milliseconds,
+                cv.enum(VEML3235_INTEGRATION_TIMES, lower=True),
+            ),
         }
     )
     .extend(cv.polling_component_schema("60s"))
