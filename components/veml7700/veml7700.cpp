@@ -81,6 +81,7 @@ float VEML7700Sensor::read_lx_() {
       als_raw_value_multiplier *=1;
       break;
     default:
+      als_raw_value_multiplier *=3;
       break;
   }
   ESP_LOGD(TAG, "'%s': ALS raw = %u, multiplier = %.5f", this->get_name().c_str(), als_raw_value,
@@ -103,6 +104,7 @@ float VEML7700Sensor::read_lx_() {
       als_raw_value_multiplier *= 0.03125;
       break;
     default:
+      als_raw_value_multiplier *=3;
       break;
   } 
   // finally, determine and return the actual lux value
