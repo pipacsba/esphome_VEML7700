@@ -130,8 +130,8 @@ class VEML7700Sensor : public sensor::Sensor, public PollingComponent, public i2
   bool auto_gain() { return this->auto_gain_; }
   float auto_gain_threshold_high() { return this->auto_gain_threshold_high_; }
   float auto_gain_threshold_low() { return this->auto_gain_threshold_low_; }
-  VEML7700ComponentGain gain() { return this->gain_; }
-  VEML7700ComponentIntegrationTime integration_time() { return this->integration_time_; }
+  VEML7700Gain gain() { return this->gain_; }
+  VEML7700IntegrationTime integration_time() { return this->integration_time_; }
 
   // Updates the configuration register on the device
   bool refresh_config_reg(bool force_on = false);
