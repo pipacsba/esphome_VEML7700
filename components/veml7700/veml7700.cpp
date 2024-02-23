@@ -235,7 +235,7 @@ void VEML7700Sensor::dump_config() {
   }
 
   float a_psm = 0;
-  switch (this->gain_)
+  switch (this->psm_)
   {
     case PSM_1 :
       a_psm = 1;
