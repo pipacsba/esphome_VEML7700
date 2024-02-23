@@ -129,7 +129,11 @@ float VEML7700Sensor::read_lx_() {
 
 void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
   if ((als_raw_value > UINT16_MAX * this->auto_gain_threshold_low_) &&
-      (als_raw_value < UINT16_MAX * this->auto_gain_threshold_high_)) {
+      (als_raw_value < UINT16_MAX * this->auto_gain_threshold_high_)) 
+  {
+    ESP_LOGD(TAG, "No change needed for ALS raw = %u, low_lim: %u, high_lim: %u" , 
+      als_raw_value,UINT16_MAX * this->auto_gain_threshold_low_,
+      UINT16_MAX * this->auto_gain_threshold_high_);
     return;
   }
 
@@ -138,6 +142,7 @@ void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
     this->gain_ = VEML7700_GAIN_1X;
     this->integration_time_ = VEML7700_INTEGRATION_25MS;
     this->refresh_config_reg();
+    ESP_LOGD(TAG, "Raw value is too high, reset to minimum for  ALS raw = %u", als_raw_value);
     return;
   }
 
@@ -145,12 +150,15 @@ void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
     switch (this->gain_) {
       case VEML7700_GAIN_0p125X:
         this->gain_ = VEML7700_GAIN_0p25X;
+         ESP_LOGD(TAG, "Gain increased for ALS raw = %u to 1/4" , als_raw_value);
         break;
       case VEML7700_GAIN_0p25X:
         this->gain_ = VEML7700_GAIN_1X;
+        ESP_LOGD(TAG, "Gain increased for ALS raw = %u to 1" , als_raw_value);
         break;
       case VEML7700_GAIN_1X:
         this->gain_ = VEML7700_GAIN_2X;
+        ESP_LOGD(TAG, "Gain increased for ALS raw = %u to 2" , als_raw_value);
         break;
       default:
         break;
