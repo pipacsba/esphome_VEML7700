@@ -31,8 +31,8 @@ void VEML7700Sensor::setup() {
 bool VEML7700Sensor::refresh_config_reg(bool force_on) 
 {
   bool d_return = this->write_byte_16(CONFIGURATION_REGISTER, 0x1);
-  ESP_LOGD(TAG, "Disable PSM");
   bool a_return = this->write_byte_16(POWER_SAVING_REGISTER, PSM_DIS);
+  ESP_LOGD(TAG, "Disable PSM and turn off ALS");
   
   uint16_t data = this->power_on_ || force_on ? ALS_POWERON : ALS_POWEROFF;
   data |= (uint16_t(this->integration_time_));
