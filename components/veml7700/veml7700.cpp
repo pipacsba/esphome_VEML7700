@@ -30,9 +30,9 @@ void VEML7700Sensor::setup() {
 
 bool VEML7700Sensor::refresh_config_reg(bool force_on) 
 {
-  bool d_return = this->write_byte_16(CONFIGURATION_REGISTER, 0x1);
-  bool a_return = this->write_byte_16(POWER_SAVING_REGISTER, PSM_DIS);
-  ESP_LOGD(TAG, "Disable PSM and turn off ALS");
+  //bool d_return = this->write_byte_16(CONFIGURATION_REGISTER, 0x1);
+  //bool a_return = this->write_byte_16(POWER_SAVING_REGISTER, PSM_DIS);
+  //ESP_LOGD(TAG, "Disable PSM and turn off ALS");
   
   uint16_t data = this->power_on_ || force_on ? ALS_POWERON : ALS_POWEROFF;
   data |= (uint16_t(this->integration_time_));
@@ -45,7 +45,7 @@ bool VEML7700Sensor::refresh_config_reg(bool force_on)
   ESP_LOGD(TAG, "Enabling PSM: Writing 0x%.4x to register 0x%.2x", data, POWER_SAVING_REGISTER);
   bool c_return = this->write_byte_16(POWER_SAVING_REGISTER, data);
   
-  return a_return & b_return & c_return & d_return;  
+  return b_return & c_return;  
 }
 
 float VEML7700Sensor::read_lx_() {
