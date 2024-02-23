@@ -43,11 +43,14 @@ external_components:
 
 sensor:
   - platform: veml7700
-    name: "LivingRoomClock_light"
-    id: livingRoomClock_light
-    address: 0x10
+    name: "veml7700_lux"
+    id: veml7700_lux
+    address: '0x10'
     update_interval: 60s
     force_update: True
     gain: "2x"
     integration_time: 100ms
-    psm: 1
+    auto_gain: False
+    auto_gain_threshold_high: 90%
+    auto_gain_threshold_low: 10%
+    psm: 4
