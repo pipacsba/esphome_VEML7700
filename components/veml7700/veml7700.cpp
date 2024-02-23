@@ -137,15 +137,15 @@ void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
     return;
   }
 
-  if (als_raw_value >= UINT16_MAX * 0.9) {  // over-saturated, reset all gains and start over
-    //this->digital_gain_ = VEML7700_DIGITAL_GAIN_1X;
-    this->gain_ = VEML7700_GAIN_1X;
+  // too high case
+  if (als_raw_value >= UINT16_MAX * this->auto_gain_threshold_high_) {  // over-saturated, reset all gains and start over
+    this->gain_ = VEML7700_GAIN_0p125X;
     this->integration_time_ = VEML7700_INTEGRATION_25MS;
     this->refresh_config_reg();
     ESP_LOGD(TAG, "Raw value is too high, reset to minimum for  ALS raw = %u", als_raw_value);
     return;
   }
-
+  //too low
   if (this->gain_ != VEML7700_GAIN_2X) {  // increase gain if possible
     switch (this->gain_) {
       case VEML7700_GAIN_0p125X:
@@ -172,18 +172,23 @@ void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
     switch (this->integration_time_) {
       case VEML7700_INTEGRATION_25MS:
         this->integration_time_ = VEML7700_INTEGRATION_50MS;
+        ESP_LOGD(TAG, "Integration time increased for ALS raw = %u to 50ms gain to 1/8" , als_raw_value);
         break;
       case VEML7700_INTEGRATION_50MS:
         this->integration_time_ = VEML7700_INTEGRATION_100MS;
+        ESP_LOGD(TAG, "Integration time increased for ALS raw = %u to 100ms gain to 1/8" , als_raw_value);
         break;
       case VEML7700_INTEGRATION_100MS:
         this->integration_time_ = VEML7700_INTEGRATION_200MS;
+        ESP_LOGD(TAG, "Integration time increased for ALS raw = %u to 200ms gain to 1/8" , als_raw_value);
         break;
       case VEML7700_INTEGRATION_200MS:
         this->integration_time_ = VEML7700_INTEGRATION_400MS;
+        ESP_LOGD(TAG, "Integration time increased for ALS raw = %u to 400ms gain to 1/8" , als_raw_value);
         break;
       case VEML7700_INTEGRATION_400MS:
         this->integration_time_ = VEML7700_INTEGRATION_400MS;
+        ESP_LOGD(TAG, "Integration time increased for ALS raw = %u to 800ms gain to 1/8" , als_raw_value);
         break;
       default:
         break;
@@ -195,7 +200,6 @@ void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
 }
 
 
-  
 void VEML7700Sensor::dump_config() {
   LOG_SENSOR("", "VEML7700", this);
   LOG_I2C_DEVICE(this);
