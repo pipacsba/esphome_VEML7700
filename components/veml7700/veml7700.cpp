@@ -274,9 +274,9 @@ void VEML7700Sensor::dump_config() {
       a_gain = 2;
   }
   
-  ESP_LOGCONFIG(TAG, "  Gain: %.0f x", a_gain);
-  ESP_LOGCONFIG(TAG, "  Integration Time: %.0f ms", an_int_time);
-  ESP_LOGCONFIG(TAG, "  PSM: %.0f, wake-up-time: %.0f ms",a_psm, a_wakeuptime);
+  ESP_LOGCONFIG(TAG, "  Gain: %.0fX %X", a_gain, this->gain_);
+  ESP_LOGCONFIG(TAG, "  Integration Time: %.0f ms %X", an_int_time, this->integration_time_);
+  ESP_LOGCONFIG(TAG, "  PSM: %.0f, wake-up-time: %.0f ms %X",a_psm, a_wakeuptime, this->psm_);
 
   LOG_UPDATE_INTERVAL(this);
 }
