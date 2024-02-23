@@ -128,6 +128,7 @@ float VEML7700Sensor::read_lx_() {
 }
 
 void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
+  // if the raw value is not too high and not too low, nothing to do, exit
   if ((als_raw_value > UINT16_MAX * this->auto_gain_threshold_low_) &&
       (als_raw_value < UINT16_MAX * this->auto_gain_threshold_high_)) 
   {
@@ -137,7 +138,7 @@ void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
     return;
   }
 
-  // too high case
+  // if the raw value is too high reset everything and exit
   if (als_raw_value >= UINT16_MAX * this->auto_gain_threshold_high_) {  // over-saturated, reset all gains and start over
     this->gain_ = VEML7700_GAIN_0p125X;
     this->integration_time_ = VEML7700_INTEGRATION_25MS;
@@ -145,7 +146,7 @@ void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
     ESP_LOGD(TAG, "Raw value is too high, reset to minimum for  ALS raw = %u", als_raw_value);
     return;
   }
-  //too low
+  //if the raw value is too low, than first set the gain only
   if (this->gain_ != VEML7700_GAIN_2X) {  // increase gain if possible
     switch (this->gain_) {
       case VEML7700_GAIN_0p125X:
