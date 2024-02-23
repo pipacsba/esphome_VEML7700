@@ -16,6 +16,17 @@ void VEML7700Sensor::setup() {
     this->mark_failed();
     return;
   }
+
+  uint16_t data = PSM_EN;
+  data |= (uint16_t(this->psm_));
+  //uint16_t setting_psm = psm_en | psm;
+  ESP_LOGD(TAG, "Writing 0x%.4x to register 0x%.2x", data, POWER_SAVING_REGISTER);
+  if (!this->write_byte_16(POWER_SAVING_REGISTER, data)){
+    ESP_LOGE(TAG, "Unable to write configuration");
+    this->mark_failed();
+    return;
+  }
+  
   if ((this->write(&ID_REG, 1, false) != i2c::ERROR_OK) || !this->read_bytes_raw(device_id, 2)) {
     ESP_LOGE(TAG, "Unable to read ID");
     this->mark_failed();
@@ -34,15 +45,8 @@ bool VEML7700Sensor::refresh_config_reg(bool force_on) {
   data |= (uint16_t(this->gain_));
 
   ESP_LOGD(TAG, "Writing 0x%.4x to register 0x%.2x", data, CONFIGURATION_REGISTER);
-  bool a_return = this->write_byte_16(CONFIGURATION_REGISTER, data);
+  return  this->write_byte_16(CONFIGURATION_REGISTER, data);
   
-  data = PSM_EN;
-  data |= (uint16_t(this->psm_));
-  //uint16_t setting_psm = psm_en | psm;
-  ESP_LOGD(TAG, "Writing 0x%.4x to register 0x%.2x", data, POWER_SAVING_REGISTER);
-  bool b_return = this->write_byte_16(POWER_SAVING_REGISTER, data);
-  
-  return a_return & b_return;
 }
 
 float VEML7700Sensor::read_lx_() {
