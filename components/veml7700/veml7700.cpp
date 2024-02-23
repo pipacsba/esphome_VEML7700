@@ -261,17 +261,21 @@ void VEML7700Sensor::dump_config() {
     case PSM_1 :
       a_psm = 1;
       a_wakeuptime = 500;
+      break;
     case PSM_2 :
       a_psm = 2;
       a_wakeuptime = 1000;
+      break;
     case PSM_3 :
       a_psm = 3;
       a_wakeuptime = 2000;
+      break;
     case PSM_4 :
       a_psm = 4;
       a_wakeuptime = 4000;
+      break;
     default:
-      a_gain = 2;
+      break;
   }
   
   ESP_LOGCONFIG(TAG, "  Gain: %.0fX; 0x%.4x", a_gain, this->gain_);
