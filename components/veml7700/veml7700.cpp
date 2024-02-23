@@ -215,12 +215,18 @@ void VEML7700Sensor::dump_config() {
   {
     case VEML7700_GAIN_1X :
       a_gain = 1;
+      break;
     case VEML7700_GAIN_0p25X :
       a_gain = 0.25;
+      break;
     case VEML7700_GAIN_0p125X :
       a_gain = 0.125;
-    default:
+      break;
+    case VEML7700_GAIN_2X :
       a_gain = 2;
+      break;
+    default:
+      break;
   }
 
   float an_int_time = 0;
