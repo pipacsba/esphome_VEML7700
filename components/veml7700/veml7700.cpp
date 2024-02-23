@@ -233,10 +233,25 @@ void VEML7700Sensor::dump_config() {
     default:
       break;
   }
+
+  float a_psm = 0;
+  switch (this->gain_)
+  {
+    case PSM_1 :
+      a_psm = 1;
+    case PSM_2 :
+      a_psm = 2;
+        case PSM_3 :
+      a_psm = 3;
+        case PSM_4 :
+      a_psm = 4;
+    default:
+      a_gain = 2;
+  }
   
   ESP_LOGCONFIG(TAG, "  Gain: %.0f x", a_gain);
   ESP_LOGCONFIG(TAG, "  Integration Time: %.0f ms", an_int_time);
-  ESP_LOGCONFIG(TAG, "  PSM: %.1f ms", this->psm_);
+  ESP_LOGCONFIG(TAG, "  PSM: %.0f ms",a_psm);
 
   LOG_UPDATE_INTERVAL(this);
 }
