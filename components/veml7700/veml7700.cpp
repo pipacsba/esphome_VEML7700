@@ -28,7 +28,9 @@ void VEML7700Sensor::setup() {
   }
 }
 
-bool VEML7700Sensor::refresh_config_reg(bool force_on) {
+bool VEML7700Sensor::refresh_config_reg(bool force_on) 
+{
+  bool d_return = this->write_byte_16(CONFIGURATION_REGISTER, 0x1);
   ESP_LOGD(TAG, "Disable PSM");
   bool a_return = this->write_byte_16(POWER_SAVING_REGISTER, PSM_DIS);
   
@@ -43,7 +45,7 @@ bool VEML7700Sensor::refresh_config_reg(bool force_on) {
   ESP_LOGD(TAG, "Enabling PSM: Writing 0x%.4x to register 0x%.2x", data, POWER_SAVING_REGISTER);
   bool c_return = this->write_byte_16(POWER_SAVING_REGISTER, data);
   
-  return a_return & b_return & c_return;  
+  return a_return & b_return & c_return & d_return;  
 }
 
 float VEML7700Sensor::read_lx_() {
@@ -69,11 +71,11 @@ float VEML7700Sensor::read_lx_() {
   uint16_t als_raw_value = encode_uint16(als_regs[1], als_regs[0]);
   // determine multiplier value based on gains and integration time
   switch (this->gain_) {
-    case VEML7700_GAIN_0p25X:
-      als_raw_value_multiplier *= 8;
-      break;
     case VEML7700_GAIN_0p125X:
       als_raw_value_multiplier *= 16;
+      break;
+    case VEML7700_GAIN_0p25X:
+      als_raw_value_multiplier *= 8;
       break;
     case VEML7700_GAIN_1X:
       als_raw_value_multiplier *= 2;
@@ -87,6 +89,12 @@ float VEML7700Sensor::read_lx_() {
   
   switch (this->integration_time_)
   {
+    case VEML7700_INTEGRATION_25MS:
+      als_raw_value_multiplier *= 32;
+      break;    
+    case VEML7700_INTEGRATION_50MS:
+      als_raw_value_multiplier *= 16;
+      break;
     case VEML7700_INTEGRATION_100MS:
       als_raw_value_multiplier *= 8;
       break;
@@ -98,12 +106,6 @@ float VEML7700Sensor::read_lx_() {
       break;
     case VEML7700_INTEGRATION_800MS:
       als_raw_value_multiplier *= 1;
-      break;
-    case VEML7700_INTEGRATION_50MS:
-      als_raw_value_multiplier *= 16;
-      break;
-    case VEML7700_INTEGRATION_25MS:
-      als_raw_value_multiplier *= 32;
       break;
     default:
       break;
