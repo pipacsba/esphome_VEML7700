@@ -42,7 +42,7 @@ bool VEML7700Sensor::refresh_config_reg(bool force_on)
   uint8_t array[2];
   array[0]=data & 0xff;
   array[1]=(data >> 8);
-  data = encode_uint16(array[1], array[0]);
+  data = encode_uint16(array[0], array[1]);
   
   ESP_LOGD(TAG, "Turn on ALS and set up configuration: Writing 0x%.4x to register 0x%.2x", data, CONFIGURATION_REGISTER);
   bool b_return = this->write_byte_16(CONFIGURATION_REGISTER, data);
@@ -74,7 +74,7 @@ float VEML7700Sensor::read_lx_() {
   uint8_t array[2];
   array[0]=data & 0xff;
   array[1]=(data >> 8);
-  data = encode_uint16(array[1], array[0]);
+  data = encode_uint16(array[0], array[1]);
   ESP_LOGD(TAG, "Expected configuration: 0x%.4x", data, CONFIGURATION_REGISTER);
   
   uint8_t conf_regs[] = {0, 0};
