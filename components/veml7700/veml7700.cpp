@@ -131,7 +131,7 @@ float VEML7700Sensor::read_lx_() {
   } 
   // finally, determine and return the actual lux value
   float lx = float(als_raw_value) * als_raw_value_multiplier;
-  ESP_LOGD(TAG, "'%s': ALS raw = %u, multiplier = %.5f", this->get_name().c_str(), als_raw_value,
+  ESP_LOGD(TAG, "'%s': ALS raw = %x, multiplier = %.5f", this->get_name().c_str(), als_raw_value,
             als_raw_value_multiplier);
   ESP_LOGD(TAG, "'%s': Illuminance = %.4flx", this->get_name().c_str(), lx);
 
@@ -154,7 +154,7 @@ void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
   if ((als_raw_value > UINT16_MAX * this->auto_gain_threshold_low_) &&
       (als_raw_value < UINT16_MAX * this->auto_gain_threshold_high_)) 
   {
-    ESP_LOGD(TAG, "No change needed for ALS raw = %u, low_lim: %u, high_lim: %u" , 
+    ESP_LOGD(TAG, "No change needed for ALS raw = %x, low_lim: %x, high_lim: %x" , 
       als_raw_value,UINT16_MAX * this->auto_gain_threshold_low_,
       UINT16_MAX * this->auto_gain_threshold_high_);
     return;
@@ -165,7 +165,7 @@ void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
     this->gain_ = VEML7700_GAIN_0p125X;
     this->integration_time_ = VEML7700_INTEGRATION_25MS;
     this->refresh_config_reg();
-    ESP_LOGD(TAG, "Raw value is too high, reset to minimum for  ALS raw = %u", als_raw_value);
+    ESP_LOGD(TAG, "Raw value is too high, reset to minimum for  ALS raw = %x", als_raw_value);
     return;
   }
   //if the raw value is too low, than first set the gain only
@@ -173,15 +173,15 @@ void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
     switch (this->gain_) {
       case VEML7700_GAIN_0p125X:
         this->gain_ = VEML7700_GAIN_0p25X;
-         ESP_LOGD(TAG, "Gain increased for ALS raw = %u to 1/4" , als_raw_value);
+         ESP_LOGD(TAG, "Gain increased for ALS raw = %x to 1/4" , als_raw_value);
         break;
       case VEML7700_GAIN_0p25X:
         this->gain_ = VEML7700_GAIN_1X;
-        ESP_LOGD(TAG, "Gain increased for ALS raw = %u to 1" , als_raw_value);
+        ESP_LOGD(TAG, "Gain increased for ALS raw = %x to 1" , als_raw_value);
         break;
       case VEML7700_GAIN_1X:
         this->gain_ = VEML7700_GAIN_2X;
-        ESP_LOGD(TAG, "Gain increased for ALS raw = %u to 2" , als_raw_value);
+        ESP_LOGD(TAG, "Gain increased for ALS raw = %x to 2" , als_raw_value);
         break;
       default:
         break;
@@ -195,23 +195,23 @@ void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
     switch (this->integration_time_) {
       case VEML7700_INTEGRATION_25MS:
         this->integration_time_ = VEML7700_INTEGRATION_50MS;
-        ESP_LOGD(TAG, "Integration time increased for ALS raw = %u to 50ms gain to 1/8" , als_raw_value);
+        ESP_LOGD(TAG, "Integration time increased for ALS raw = %x to 50ms gain to 1/8" , als_raw_value);
         break;
       case VEML7700_INTEGRATION_50MS:
         this->integration_time_ = VEML7700_INTEGRATION_100MS;
-        ESP_LOGD(TAG, "Integration time increased for ALS raw = %u to 100ms gain to 1/8" , als_raw_value);
+        ESP_LOGD(TAG, "Integration time increased for ALS raw = %x to 100ms gain to 1/8" , als_raw_value);
         break;
       case VEML7700_INTEGRATION_100MS:
         this->integration_time_ = VEML7700_INTEGRATION_200MS;
-        ESP_LOGD(TAG, "Integration time increased for ALS raw = %u to 200ms gain to 1/8" , als_raw_value);
+        ESP_LOGD(TAG, "Integration time increased for ALS raw = %x to 200ms gain to 1/8" , als_raw_value);
         break;
       case VEML7700_INTEGRATION_200MS:
         this->integration_time_ = VEML7700_INTEGRATION_400MS;
-        ESP_LOGD(TAG, "Integration time increased for ALS raw = %u to 400ms gain to 1/8" , als_raw_value);
+        ESP_LOGD(TAG, "Integration time increased for ALS raw = %x to 400ms gain to 1/8" , als_raw_value);
         break;
       case VEML7700_INTEGRATION_400MS:
         this->integration_time_ = VEML7700_INTEGRATION_800MS;
-        ESP_LOGD(TAG, "Integration time increased for ALS raw = %u to 800ms gain to 1/8" , als_raw_value);
+        ESP_LOGD(TAG, "Integration time increased for ALS raw = %x to 800ms gain to 1/8" , als_raw_value);
         break;
       default:
         break;
