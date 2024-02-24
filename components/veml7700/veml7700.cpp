@@ -61,8 +61,7 @@ float VEML7700Sensor::read_lx_() {
 
   uint8_t conf_regs[] = {0, 0};
   if ((this->write(&CONFIGURATION_REGISTER, 1, false) != i2c::ERROR_OK) || !this->read_bytes_raw(conf_regs, 2)) {
-    this->status_set_warning();
-    return NAN;
+    ESP_LOGD(TAG, "'Unable to read configuration register");
   }
   uint16_t config_value = encode_uint16(conf_regs[1], conf_regs[0]);
   ESP_LOGD(TAG, "'%s': configuration raw = %u", this->get_name().c_str(), config_value);
