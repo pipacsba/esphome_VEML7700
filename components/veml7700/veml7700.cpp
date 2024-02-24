@@ -154,9 +154,9 @@ void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
   if ((als_raw_value > UINT16_MAX * this->auto_gain_threshold_low_) &&
       (als_raw_value < UINT16_MAX * this->auto_gain_threshold_high_)) 
   {
-    ESP_LOGD(TAG, "No change needed for ALS raw = %x, low_lim: %x, high_lim: %x" , 
-      als_raw_value,UINT16_MAX * this->auto_gain_threshold_low_,
-      UINT16_MAX * this->auto_gain_threshold_high_);
+    ESP_LOGD(TAG, "No change needed for ALS raw = %x, low_lim: %u, high_lim: %u" , 
+      als_raw_value,(unsigned int)(UINT16_MAX * this->auto_gain_threshold_low_),
+      (unsigned int)(UINT16_MAX * this->auto_gain_threshold_high_));
     return;
   }
 
