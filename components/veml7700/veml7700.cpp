@@ -210,7 +210,7 @@ void VEML7700Sensor::adjust_gain_(const uint16_t als_raw_value) {
         ESP_LOGD(TAG, "Integration time increased for ALS raw = %u to 400ms gain to 1/8" , als_raw_value);
         break;
       case VEML7700_INTEGRATION_400MS:
-        this->integration_time_ = VEML7700_INTEGRATION_400MS;
+        this->integration_time_ = VEML7700_INTEGRATION_800MS;
         ESP_LOGD(TAG, "Integration time increased for ALS raw = %u to 800ms gain to 1/8" , als_raw_value);
         break;
       default:
