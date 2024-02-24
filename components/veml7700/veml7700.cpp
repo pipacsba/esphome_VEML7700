@@ -70,12 +70,6 @@ float VEML7700Sensor::read_lx_() {
   uint16_t data = this->power_on_ ? ALS_POWERON : ALS_POWEROFF;
   data |= (uint16_t(this->integration_time_));
   data |= (uint16_t(this->gain_));
-  //swap upper and lower bytes
-  uint8_t array[2];
-  array[0]=data & 0xff;
-  array[1]=(data >> 8);
-  data = encode_uint16(array[0], array[1]);
-  ESP_LOGD(TAG, "Expected configuration: 0x%.4x", data, CONFIGURATION_REGISTER);
   
   uint8_t conf_regs[] = {0, 0};
   if ((this->write(&CONFIGURATION_REGISTER, 1, false) != i2c::ERROR_OK) || !this->read_bytes_raw(conf_regs, 2)) {
