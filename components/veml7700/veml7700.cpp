@@ -16,6 +16,15 @@ void VEML7700Sensor::setup() {
     this->mark_failed();
     return;
   }
+
+  uint16_t data = PSM_EN;
+  data |= (uint16_t(this->psm_));
+  ESP_LOGD(TAG, "Enabling PSM: Writing 0x%.4x to register 0x%.2x", data, POWER_SAVING_REGISTER);
+  if (!this->write_byte_16(POWER_SAVING_REGISTER, data)) {
+    ESP_LOGE(TAG, "Unable to write PSM register");
+    this->mark_failed();
+    return;
+  }
   
   if ((this->write(&ID_REG, 1, false) != i2c::ERROR_OK) || !this->read_bytes_raw(device_id, 2)) {
     ESP_LOGE(TAG, "Unable to read ID");
@@ -30,9 +39,6 @@ void VEML7700Sensor::setup() {
 
 bool VEML7700Sensor::refresh_config_reg(bool force_on) 
 {
-  //bool d_return = this->write_byte_16(CONFIGURATION_REGISTER, 0x1);
-  //bool a_return = this->write_byte_16(POWER_SAVING_REGISTER, PSM_DIS);
-  //ESP_LOGD(TAG, "Disable PSM and turn off ALS");
   
   uint16_t data = this->power_on_ || force_on ? ALS_POWERON : ALS_POWEROFF;
   data |= (uint16_t(this->integration_time_));
@@ -45,14 +51,8 @@ bool VEML7700Sensor::refresh_config_reg(bool force_on)
   data = encode_uint16(array[0], array[1]);
   
   ESP_LOGD(TAG, "Turn on ALS and set up configuration: Writing 0x%.4x to register 0x%.2x", data, CONFIGURATION_REGISTER);
-  bool b_return = this->write_byte_16(CONFIGURATION_REGISTER, data);
+  return this->write_byte_16(CONFIGURATION_REGISTER, data);
 
-  data = PSM_EN;
-  data |= (uint16_t(this->psm_));
-  ESP_LOGD(TAG, "Enabling PSM: Writing 0x%.4x to register 0x%.2x", data, POWER_SAVING_REGISTER);
-  bool c_return = this->write_byte_16(POWER_SAVING_REGISTER, data);
-  
-  return b_return & c_return;  
 }
 
 float VEML7700Sensor::read_lx_() {
@@ -66,18 +66,17 @@ float VEML7700Sensor::read_lx_() {
                // for a correct start of the signal processor and oscillator
   }
 
-
-  uint16_t data = this->power_on_ ? ALS_POWERON : ALS_POWEROFF;
-  data |= (uint16_t(this->integration_time_));
-  data |= (uint16_t(this->gain_));
-  ESP_LOGD(TAG, "Expected configuration raw = 0x%.4x", data);
-  
-  uint8_t conf_regs[] = {0, 0};
-  if ((this->write(&CONFIGURATION_REGISTER, 1, false) != i2c::ERROR_OK) || !this->read_bytes_raw(conf_regs, 2)) {
-    ESP_LOGD(TAG, "'Unable to read configuration register");
-  }
-  uint16_t config_value = encode_uint16(conf_regs[1], conf_regs[0]);
-  ESP_LOGD(TAG, "Read configuration raw = 0x%.4x", config_value);
+  //Only for debug
+  //uint16_t data = this->power_on_ ? ALS_POWERON : ALS_POWEROFF;
+  //data |= (uint16_t(this->integration_time_));
+  //data |= (uint16_t(this->gain_));
+  //ESP_LOGD(TAG, "Expected configuration raw = 0x%.4x", data);
+  //uint8_t conf_regs[] = {0, 0};
+  //if ((this->write(&CONFIGURATION_REGISTER, 1, false) != i2c::ERROR_OK) || !this->read_bytes_raw(conf_regs, 2)) {
+  //  ESP_LOGD(TAG, "'Unable to read configuration register");
+  //}
+  //uint16_t config_value = encode_uint16(conf_regs[1], conf_regs[0]);
+  //ESP_LOGD(TAG, "Read configuration raw = 0x%.4x", config_value);
   
   uint8_t als_regs[] = {0, 0};
   if ((this->write(&ALS_REGISTER, 1, false) != i2c::ERROR_OK) || !this->read_bytes_raw(als_regs, 2)) {
