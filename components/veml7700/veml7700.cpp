@@ -31,11 +31,12 @@ void VEML7700Sensor::setup() {
     ESP_LOGE(TAG, "Unable to read ID");
     this->mark_failed("Unable to read ID");
     return;
-  } else if (device_id[0] != DEVICE_ID) {
-    ESP_LOGE(TAG, "Incorrect device ID - expected 0x%.2x, read 0x%.2x", DEVICE_ID, device_id[0]);
-    this->mark_failed("Incorrect device ID");
-    return;
-  }
+  } 
+//  else if (device_id[0] != DEVICE_ID) {
+//    ESP_LOGE(TAG, "Incorrect device ID - expected 0x%.2x, read 0x%.2x", DEVICE_ID, device_id[0]);
+//    this->mark_failed("Incorrect device ID");
+//    return;
+//  }
 }
 
 bool VEML7700Sensor::refresh_config_reg(bool force_on) 
