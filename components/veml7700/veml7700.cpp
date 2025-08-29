@@ -27,7 +27,7 @@ void VEML7700Sensor::setup() {
     return;
   }
   
-  if ((this->write(&ID_REG, 1, false) != i2c::ERROR_OK) || !this->read_bytes_raw(device_id, 2)) {
+  if ((this->write(ID_REG, 1) != i2c::ERROR_OK) || !this->read_bytes_raw(device_id, 2)) {
     ESP_LOGE(TAG, "Unable to read ID");
     this->mark_failed();
     return;
@@ -73,14 +73,14 @@ float VEML7700Sensor::read_lx_() {
   //data |= (uint16_t(this->gain_));
   //ESP_LOGD(TAG, "Expected configuration raw = 0x%.4x", data);
   //uint8_t conf_regs[] = {0, 0};
-  //if ((this->write(&CONFIGURATION_REGISTER, 1, false) != i2c::ERROR_OK) || !this->read_bytes_raw(conf_regs, 2)) {
+  //if ((this->&CONFIGURATION_REGISTER, 1, false) != i2c::ERROR_OK) || !this->read_bytes_raw(conf_regs, 2)) {
   //  ESP_LOGD(TAG, "'Unable to read configuration register");
   //}
   //uint16_t config_value = encode_uint16(conf_regs[1], conf_regs[0]);
   //ESP_LOGD(TAG, "Read configuration raw = 0x%.4x", config_value);
   
   uint8_t als_regs[] = {0, 0};
-  if ((this->write(&ALS_REGISTER, 1, false) != i2c::ERROR_OK) || !this->read_bytes_raw(als_regs, 2)) {
+  if ((this->write(ALS_REGISTER, 1) != i2c::ERROR_OK) || !this->read_bytes_raw(als_regs, 2)) {
     this->status_set_warning();
     return NAN;
   }
