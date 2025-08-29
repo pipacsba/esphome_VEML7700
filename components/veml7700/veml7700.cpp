@@ -14,7 +14,7 @@ void VEML7700Sensor::setup() {
   ESP_LOGCONFIG(TAG, "Setting up VEML7700 '%s'...", this->name_.c_str());
   if (!this->refresh_config_reg()) {
     ESP_LOGE(TAG, "Unable to write configuration");
-    this->mark_failed();
+    this->mark_failed("Unable to write configuration");
     return;
   }
 
@@ -23,17 +23,17 @@ void VEML7700Sensor::setup() {
   ESP_LOGD(TAG, "Enabling PSM: Writing 0x%.4x to register 0x%.2x", data, POWER_SAVING_REGISTER);
   if (!this->write_byte_16(POWER_SAVING_REGISTER, data)) {
     ESP_LOGE(TAG, "Unable to write PSM register");
-    this->mark_failed();
+    this->mark_failed("Unable to write PSM register");
     return;
   }
   
   if ((this->write(&ID_REG, 1) != i2c::ERROR_OK) || !this->read_bytes_raw(device_id, 2)) {
     ESP_LOGE(TAG, "Unable to read ID");
-    this->mark_failed();
+    this->mark_failed("Unable to read ID");
     return;
   } else if (device_id[0] != DEVICE_ID) {
     ESP_LOGE(TAG, "Incorrect device ID - expected 0x%.2x, read 0x%.2x", DEVICE_ID, device_id[0]);
-    this->mark_failed();
+    this->mark_failed("Incorrect device ID");
     return;
   }
 }
@@ -305,6 +305,7 @@ void VEML7700Sensor::dump_config() {
   ESP_LOGCONFIG(TAG, "  PSM: %.0f, wake-up-time: %.0fms; 0x%.2x",a_psm, a_wakeuptime, this->psm_);
 
   LOG_UPDATE_INTERVAL(this);
+
 }
 
 }  // namespace tsl2561
