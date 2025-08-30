@@ -27,16 +27,18 @@ void VEML7700Sensor::setup() {
     return;
   }
   
-  if ((this->write(&ID_REG, 1) != i2c::ERROR_OK) || !this->read_bytes_raw(device_id, 2)) {
+  //if ((this->write(&ID_REG, 1) != i2c::ERROR_OK) || !this->read_bytes_raw(device_id, 2)) {
+  //esphome update due to ESP-IDF 5.x.x
+  if ((this->read_register(ID_REG, device_id, sizeof device_id) != i2c::ERROR_OK)) {
     ESP_LOGE(TAG, "Unable to read ID");
     this->mark_failed("Unable to read ID");
     return;
   } 
-//  else if (device_id[0] != DEVICE_ID) {
-//    ESP_LOGE(TAG, "Incorrect device ID - expected 0x%.2x, read 0x%.2x", DEVICE_ID, device_id[0]);
-//    this->mark_failed("Incorrect device ID");
-//    return;
-//  }
+  else if (device_id[0] != DEVICE_ID) {
+    ESP_LOGE(TAG, "Incorrect device ID - expected 0x%.2x, read 0x%.2x", DEVICE_ID, device_id[0]);
+    this->mark_failed("Incorrect device ID");
+    return;
+  }
 }
 
 bool VEML7700Sensor::refresh_config_reg(bool force_on) 
@@ -81,7 +83,9 @@ float VEML7700Sensor::read_lx_() {
   //ESP_LOGD(TAG, "Read configuration raw = 0x%.4x", config_value);
   
   uint8_t als_regs[] = {0, 0};
-  if ((this->write(&ALS_REGISTER, 1) != i2c::ERROR_OK) || !this->read_bytes_raw(als_regs, 2)) {
+  //if ((this->write(&ALS_REGISTER, 1) != i2c::ERROR_OK) || !this->read_bytes_raw(als_regs, 2)) {
+  //esphome update due to ESP-IDF 5.x.x
+  if ((this->read_register(ALS_REGISTER, als_regs, sizeof als_regs) != i2c::ERROR_OK)) {
     this->status_set_warning();
     return NAN;
   }
