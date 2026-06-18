@@ -14,7 +14,7 @@ void VEML7700Sensor::setup() {
   ESP_LOGCONFIG(TAG, "Setting up VEML7700 '%s'...", this->name_.c_str());
   if (!this->refresh_config_reg()) {
     ESP_LOGE(TAG, "Unable to write configuration");
-    this->mark_failed("Unable to write configuration");
+    this->mark_failed(LOG_STR("Unable to write configuration"));
     return;
   }
 
@@ -23,7 +23,7 @@ void VEML7700Sensor::setup() {
   ESP_LOGD(TAG, "Enabling PSM: Writing 0x%.4x to register 0x%.2x", data, POWER_SAVING_REGISTER);
   if (!this->write_byte_16(POWER_SAVING_REGISTER, data)) {
     ESP_LOGE(TAG, "Unable to write PSM register");
-    this->mark_failed("Unable to write PSM register");
+    this->mark_failed(LOG_STR("Unable to write PSM register"));
     return;
   }
   
@@ -31,12 +31,12 @@ void VEML7700Sensor::setup() {
   //esphome update due to ESP-IDF 5.x.x
   if ((this->read_register(ID_REG, device_id, sizeof device_id) != i2c::ERROR_OK)) {
     ESP_LOGE(TAG, "Unable to read ID");
-    this->mark_failed("Unable to read ID");
+    this->mark_failed(LOG_STR("Unable to read ID"));
     return;
   } 
   else if (device_id[0] != DEVICE_ID) {
     ESP_LOGE(TAG, "Incorrect device ID - expected 0x%.2x, read 0x%.2x", DEVICE_ID, device_id[0]);
-    this->mark_failed("Incorrect device ID");
+    this->mark_failed(LOG_STR("Incorrect device ID"));
     return;
   }
 }
